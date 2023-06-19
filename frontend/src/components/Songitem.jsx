@@ -1,31 +1,101 @@
 import React from "react";
 import { Box, Heading } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
+import axios from "axios";
 
-const Songitem = () => {
+const Songitem = ({ song }) => {
+  const handleDelete = (id) => {
+    console.log(id);
+    axios
+      .delete(`https://lucky-pumps-deer.cyclic.app/admin/allSongs/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => {
+        alert(res.data);
+        window.location.reload();
+      });
+  };
+
+  const handleAdd = (id) => {
+    console.log(id);
+    axios
+      .post(`https://lucky-pumps-deer.cyclic.app/add/song/playlist/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+      .then((res) => {
+        console.log(res);
+        alert(res.data);
+      });
+  };
   return (
     <div>
-      <Box
-        bg="black"
-        h={"20"}
-        w="75%"
-        p={0}
-        color="white"
-        display={"flex"}
-        justifyContent={"space-around"}
+      <div
+        style={{
+          display: "flex",
+          color: "white",
+          padding: "10px",
+          backgroundColor: "black",
+        }}
       >
-        <Box bg="black" h={"20"} w="100%" p={0} color="white">
+        <div
+          style={{
+            height: "80px",
+            width: "100%",
+            backgroundColor: "black",
+            display: "flex",
+            gap: "2%",
+            lineHeight: "24px",
+          }}
+        >
           <img
-            src="https://img.wynk.in/unsafe/248x248/filters:no_upscale():strip_exif():format(webp)/http://s3.ap-south-1.amazonaws.com/wynk-music-cms/srch_saregama/20230614165945000/8907212007012/1686816917782/resources/8907212007012.jpg"
-            alt=""
+            src={song.image_url}
+            alt={song.artist}
             style={{ height: "100%", width: "10%" }}
           />
-        </Box>
-        <Box>
-          <Heading as="h3" size="lg">
-            (lg) In love with React & Next
-          </Heading>
-        </Box>
-      </Box>
+          <p
+            style={{
+              fontSize: "18px",
+              fontFamily: "sans-serif,Roboto",
+              fontStretch: "extra-expanded",
+            }}
+          >
+            {song.name}{" "}
+            <span>
+              <p
+                style={{
+                  fontSize: "18px",
+                  fontFamily: "sans-serif,Roboto",
+                  fontStretch: "extra-expanded",
+                  color: "GrayText",
+                  textDecoration: "underline",
+                  marginTop: "10px",
+                }}
+              >
+                {song.artist}
+              </p>
+            </span>
+          </p>
+        </div>
+        <div style={{ color: "white", display: "flex", gap: "40px" }}>
+          <button onClick={() => handleDelete(song._id)}>
+            <DeleteIcon />
+          </button>
+          <button
+            onClick={() => handleAdd(song._id)}
+            style={{
+              backgroundColor: "red",
+              width: "50px",
+              height: "30px",
+              marginTop: "27px",
+              borderRadius: "20%",
+            }}
+          >
+            <h4>Add</h4>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
